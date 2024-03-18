@@ -32,6 +32,12 @@ module.exports.register = async (req, res) => {
   const { name, email, password, role } = req.body;
   try {
     const verificationToken = Math.floor(100000 + Math.random() * 900000);
+    if(role === "participant"){
+        const {gender} = req.body;
+        if(!gender){
+        return res.status(400).json({ status:false,message: "Gender is required for participant"});
+        }
+    }
     const user = await User.create({
       name,
       email,

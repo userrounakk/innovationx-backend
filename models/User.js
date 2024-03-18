@@ -25,6 +25,10 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  gender:{
+    type: String,
+    required:false,
+  },
   verifiedAt: {
     type: Date,
     default: null,
