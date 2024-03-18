@@ -14,3 +14,21 @@ module.exports.register = async (req, res) =>{
         res.status(400).json({error: error.message});
     }
 }
+
+module.exports.verify = async (req, res) =>{
+    const {email, otp} = req.body;
+    try {
+        const user = await User.findOne({email})
+        if(user.verificationToken === otp){
+            user.verifiedAt = Date.now();
+            user.verificationToken = undefined; 
+            user.save();
+            res.status(200).json({message: "User Verified"});
+        }
+        else{
+            res.status(400).json({error: "Invalid OTP"});
+        }
+    }catch (error) {
+        res.status(400).json({error: error.message});
+    }
+}
