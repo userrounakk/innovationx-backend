@@ -1,4 +1,5 @@
 const User = require("../../models/User");
+const Deliverable = require("../../models/Deliverables");
 const jwt = require("jsonwebtoken");
 const otpVerification = require("../mail/otp-verification");
 
@@ -90,6 +91,27 @@ module.exports.login = async (req, res) => {
       message: "Successfully Logged In",
       data: { role: user.role },
     });
+  } catch (err) {
+    const errors = handleErr(err);
+    res.status(400).json({ status: false, message: err.message });
+  }
+};
+module.exports.deliverables = (req, res) => {
+  try {
+    // const { deliverables } = req.body;
+    res
+      .status(200)
+      .json({ status: true, message: "Deliverables get request successful" }); // res.send("Deliverables posted");
+  } catch (err) {
+    const errors = handleErr(err);
+    res.status(400).json({ status: false, message: err.message });
+  }
+};
+module.exports.newDeliverable = async (req, res) => {
+  try {
+    const { item, description } = req.body;
+    const newDeliverable = await Deliverable.create({ item, description });
+    res.status(200).json({ status: true, message: "Deliverables posted" });
   } catch (err) {
     const errors = handleErr(err);
     res.status(400).json({ status: false, message: err.message });
