@@ -60,6 +60,13 @@ const eventSchema= new Schema({
         type: String,
         enum: ["open","closed","completed","ongoing","cancelled"],
         required: true,
+    }, 
+    budget:{
+        type: Number,
+    },
+    createdAt:{
+        type: Date,
+        default: Date.now,
     }
 });
 
