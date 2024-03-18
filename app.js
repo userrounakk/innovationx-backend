@@ -2,7 +2,6 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const express = require('express');
 const routes = require('./routes/routes');
-const mailSender = require('./app/controller/mail-controller');
 
 const port = 3000;
 const app = express();

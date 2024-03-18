@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 async function mailSender(to, subject, content){
     transporter.sendMail({
-        from: 'Event Yantra',
+        from: 'Event Yatra',
         to: to,
         subject: subject,
         html: content
