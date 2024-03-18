@@ -2,7 +2,6 @@ const User = require("../../models/User");
 const jwt = require("jsonwebtoken");
 const otpVerification = require("../mail/otp-verification");
 
-
 const handleErr = (err) => {
   console.log(err.message, err.code);
   let errors = { email: "", password: "" };
@@ -32,11 +31,14 @@ module.exports.register = async (req, res) => {
   const { name, email, password, role } = req.body;
   try {
     const verificationToken = Math.floor(100000 + Math.random() * 900000);
-    if(role === "participant"){
-        const {gender} = req.body;
-        if(!gender){
-        return res.status(400).json({ status:false,message: "Gender is required for participant"});
-        }
+    if (role === "participant") {
+      const { gender } = req.body;
+      if (!gender) {
+        return res.status(400).json({
+          status: false,
+          message: "Gender is required for participant",
+        });
+      }
     }
     const user = await User.create({
       name,
@@ -48,9 +50,9 @@ module.exports.register = async (req, res) => {
     if (user) {
       otpVerification(email, verificationToken);
     }
-    res.status(201).json({ status:true,message:"Registration Successful." });
+    res.status(201).json({ status: true, message: "Registration Successful." });
   } catch (error) {
-    res.status(400).json({ status:false,message: error.message });
+    res.status(400).json({ status: false, message: error.message });
   }
 };
 
@@ -62,12 +64,12 @@ module.exports.verify = async (req, res) => {
       user.verifiedAt = Date.now();
       user.verificationToken = undefined;
       user.save();
-      res.status(200).json({status:true, message: "User Verified" });
+      res.status(200).json({ status: true, message: "User Verified" });
     } else {
-      res.status(400).json({ status:false,message: "Invalid OTP" });
+      res.status(400).json({ status: false, message: "Invalid OTP" });
     }
   } catch (error) {
-    res.status(400).json({ status:false,message: error.message });
+    res.status(400).json({ status: false, message: error.message });
   }
 };
 
@@ -76,11 +78,20 @@ module.exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.login(email, password);
+    if (!user.verifiedAt) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Please verify your email." });
+    }
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 3 });
-    res.status(200).json({ status:true,message:"Successfully Logged In",data:{role:user.role} });
+    res.status(200).json({
+      status: true,
+      message: "Successfully Logged In",
+      data: { role: user.role },
+    });
   } catch (err) {
     const errors = handleErr(err);
-    res.status(400).json({ status:false,message:err.message });
+    res.status(400).json({ status: false, message: err.message });
   }
 };

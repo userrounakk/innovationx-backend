@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const {Schema} = mongoose;
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const { Schema } = mongoose;
 
 const userSchema = new Schema({
   name: {
@@ -10,7 +10,10 @@ const userSchema = new Schema({
   email: {
     type: String,
     required: true,
-    match: [/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, "Invalid email format"],
+    match: [
+      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+      "Invalid email format",
+    ],
   },
   password: {
     type: String,
@@ -25,9 +28,9 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  gender:{
+  gender: {
     type: String,
-    required:false,
+    required: false,
   },
   verifiedAt: {
     type: Date,
@@ -47,7 +50,7 @@ userSchema.statics.login = async function (email, password) {
     }
     throw Error("Incorrect Password");
   }
-  throw Error("Incorrect Email");
+  throw Error("User not found.");
 };
-const User = mongoose.model('user', userSchema);
+const User = mongoose.model("user", userSchema);
 module.exports = User;
